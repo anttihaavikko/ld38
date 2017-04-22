@@ -34,6 +34,7 @@ public class PlatformerController : MonoBehaviour {
 	private Vector3 spawn;
 	public GameObject mouth;
 	public Transform shine;
+	private bool key = false;
 
 	// particles
 	public GameObject jumpParticles, landParticles;
@@ -236,11 +237,23 @@ public class PlatformerController : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
-		if (other.gameObject.tag == "Goal") {
+
+		if (other.gameObject.tag == "Key") {
 			EffectManager.Instance.AddEffectAt (0, other.transform.position);
+			key = true;
 			Destroy (other.gameObject);
-			mouth.SetActive (true);
-			Invoke ("NextLevel", 2f);
+		}
+
+		if (other.gameObject.tag == "Goal") {
+
+			Goal g = other.GetComponent<Goal> ();
+
+			if (!g.cage || key) {
+				EffectManager.Instance.AddEffectAt (0, other.transform.position);
+				Destroy (other.gameObject);
+				mouth.SetActive (true);
+				Invoke ("NextLevel", 2f);
+			}
 		}
 	}
 
