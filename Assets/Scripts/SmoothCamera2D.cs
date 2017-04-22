@@ -38,6 +38,6 @@ public class SmoothCamera2D : MonoBehaviour {
 		shakeAmount = amount;
 		shakeTime = time;
 
-		chroma.chromaticAberration = 100 * amount;
+		chroma.chromaticAberration = Screen.width / 7 * amount;
 	}
 }

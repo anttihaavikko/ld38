@@ -45,6 +45,8 @@ public class PlatformerController : MonoBehaviour {
 	// animations
 	private Animator anim;
 
+	private SmoothCamera2D cam;
+
 	// ###############################################################
 
 	// Use this for initialization
@@ -53,6 +55,7 @@ public class PlatformerController : MonoBehaviour {
 		audioSource = GetComponent<AudioSource> ();
 		anim = GetComponentInChildren<Animator> ();
 		dirGrav = GetComponent<DirectionalGravity> ();
+		cam = Camera.main.GetComponent<SmoothCamera2D> ();
 
 		spawn = transform.position;
 	}
@@ -212,6 +215,10 @@ public class PlatformerController : MonoBehaviour {
 		if (!grounded) {
 			Land ();
 		}
+			
+		if (coll.relativeVelocity.magnitude > 7f) {
+			cam.Shake (coll.relativeVelocity.magnitude / 150f, coll.relativeVelocity.magnitude / 150f);
+		}
 
 		grounded = true;
 		groundAngle = Mathf.Atan2(coll.contacts [0].normal.y, coll.contacts [0].normal.x) * Mathf.Rad2Deg - 90;
@@ -230,6 +237,7 @@ public class PlatformerController : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.gameObject.tag == "Goal") {
+			EffectManager.Instance.AddEffectAt (0, other.transform.position);
 			Destroy (other.gameObject);
 			mouth.SetActive (true);
 			Invoke ("NextLevel", 2f);
