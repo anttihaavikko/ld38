@@ -81,6 +81,18 @@ public class PlatformerController : MonoBehaviour {
 			ResetPosition ();
 		}
 
+		if (Input.GetAxis ("Vertical") < -0.1f && Mathf.Abs (Input.GetAxis ("Horizontal")) < 0.1f) {
+			anim.SetBool ("duck", true);
+		} else {
+			anim.SetBool ("duck", false);
+		}
+
+		if (Input.GetAxis ("Vertical") > 0.1f && Mathf.Abs (Input.GetAxis ("Horizontal")) < 0.1f) {
+			anim.SetBool ("stretch", true);
+		} else {
+			anim.SetBool ("stretch", false);
+		}
+
 		Vector2 shinePos = Quaternion.Euler(0, 0, -transform.rotation.eulerAngles.z) * (Vector3.up * 5f - transform.position).normalized * 0.05f;
 		shinePos = new Vector2 (shinePos.x * transform.localScale.x, shinePos.x * transform.localScale.y);
 		shine.localPosition = Vector2.MoveTowards(shine.localPosition, shinePos, 0.1f);
