@@ -29,6 +29,7 @@ public class PlatformerController : MonoBehaviour {
 
 	// misc
 	private float jumpBufferedFor = 0;
+	private DirectionalGravity dirGrav;
 
 	// particles
 	public GameObject jumpParticles, landParticles;
@@ -47,27 +48,13 @@ public class PlatformerController : MonoBehaviour {
 		body = GetComponent<Rigidbody2D> ();
 		audioSource = GetComponent<AudioSource> ();
 		anim = GetComponentInChildren<Animator> ();
+		dirGrav = GetComponent<DirectionalGravity> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
 		bool wasGrounded = grounded;
-
-		if (!checkForEdges) {
-			grounded = Physics2D.OverlapCircle (groundCheck.position, groundCheckRadius, groundLayer);
-
-			// draw debug lines
-			Color debugLineColor = grounded ? Color.green : Color.red;
-			Debug.DrawLine (transform.position, groundCheck.position, debugLineColor, 0.2f);
-			Debug.DrawLine (groundCheck.position + Vector3.left * groundCheckRadius, groundCheck.position + Vector3.right * groundCheckRadius, debugLineColor, 0.2f);
-		} else {
-			grounded = Physics2D.Raycast (transform.position, Vector2.down, 1f);
-
-			// draw debug lines
-			Color debugLineColor = grounded ? Color.green : Color.red;
-			Debug.DrawRay (transform.position, Vector2.down, debugLineColor, 0.2f);
-		}
 
 		// just landed
 		if (!wasGrounded && grounded) {
@@ -89,13 +76,13 @@ public class PlatformerController : MonoBehaviour {
 
 			float inputDirection = Input.GetAxis("Horizontal");
 
+			bool jumpCheck = Physics2D.OverlapCircle (groundCheck.position, groundCheckRadius, groundLayer);;
+
 
 			// jump
-			if ((grounded || (canDoubleJump && !doubleJumped)) && (Input.GetButtonDown("Jump") || jumpBufferedFor > 0)) {
+			if ((jumpCheck || (canDoubleJump && !doubleJumped)) && (Input.GetButtonDown("Jump") || jumpBufferedFor > 0)) {
 
-				body.velocity = new Vector2 (body.velocity.x, 0); // reset vertical speed
-
-				if (!grounded) {
+				if (!jumpCheck) {
 					doubleJumped = true;
 				}
 
@@ -117,7 +104,7 @@ public class PlatformerController : MonoBehaviour {
 					anim.SetTrigger ("jump");
 				}
 
-				body.AddForce (Vector2.up * jump, ForceMode2D.Impulse);
+				body.AddForce (dirGrav.MoveVector (inputDirection) + dirGrav.JumpVector() * jump, ForceMode2D.Impulse);
 
 			} else if (canControl && Input.GetButtonDown("Jump")) {
 			
@@ -126,12 +113,30 @@ public class PlatformerController : MonoBehaviour {
 			}
 
 			// moving
-			Vector2 moveVector = new Vector2 (speed * inputDirection, body.velocity.y);
+			if (grounded && Mathf.Abs(inputDirection) > 0.1f) {
+				Vector2 move = dirGrav.MoveVector (inputDirection) + dirGrav.JumpVector() * 2;
 
-			if (Mathf.Sign (body.velocity.x) == Mathf.Sign (moveVector.x)) {
-				body.velocity = Vector2.MoveTowards (body.velocity, moveVector, acceleration);
-			} else {
-				body.velocity = moveVector;
+//				if (Input.GetButton ("Jump")) {
+//					move *= jump * 0.1f;
+//				}
+
+//				float speedMod = (grounded) ? 1f : 0.5f;
+
+//				if (Mathf.Abs (move.x) > Mathf.Abs (move.y)) {
+//					body.velocity = new Vector2 (speedMod * speed * move.x, body.velocity.y);
+//				} else {
+//					body.velocity = new Vector2 (body.velocity.x, speedMod * speed * move.y);
+//				}
+
+				body.AddForce (move * speed, ForceMode2D.Impulse);
+
+//				if (body.velocity.magnitude > 10) {
+//					body.velocity = body.velocity.normalized * 10;
+//				}
+
+			}
+
+			if (Mathf.Abs(inputDirection) < 0.1f) {
 			}
 
 			// direction
@@ -205,7 +210,12 @@ public class PlatformerController : MonoBehaviour {
 	}
 
 	void OnCollisionEnter2D(Collision2D coll) {
+		grounded = true;
 		groundAngle = Mathf.Atan2(coll.contacts [0].normal.y, coll.contacts [0].normal.x) * Mathf.Rad2Deg - 90;
+	}
+
+	void OnCollisionExit2D(Collision2D coll) {
+		grounded = false;
 	}
 
 	public float GetGroundAngle() {
