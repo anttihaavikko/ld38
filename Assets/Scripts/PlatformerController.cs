@@ -119,24 +119,7 @@ public class PlatformerController : MonoBehaviour {
 			// moving
 			if (grounded && Mathf.Abs(inputDirection) > 0.1f) {
 				Vector2 move = dirGrav.MoveVector (inputDirection) + dirGrav.JumpVector() * 2;
-
-//				if (Input.GetButton ("Jump")) {
-//					move *= jump * 0.1f;
-//				}
-
-//				float speedMod = (grounded) ? 1f : 0.5f;
-
-//				if (Mathf.Abs (move.x) > Mathf.Abs (move.y)) {
-//					body.velocity = new Vector2 (speedMod * speed * move.x, body.velocity.y);
-//				} else {
-//					body.velocity = new Vector2 (body.velocity.x, speedMod * speed * move.y);
-//				}
-
 				body.AddForce (move * speed, ForceMode2D.Impulse);
-
-//				if (body.velocity.magnitude > 10) {
-//					body.velocity = body.velocity.normalized * 10;
-//				}
 
 			}
 
@@ -148,13 +131,6 @@ public class PlatformerController : MonoBehaviour {
 
 				float dir = Mathf.Sign (inputDirection);
 				transform.localScale = new Vector2 (dir, 1);
-
-//				Transform sprite = transform.Find("Character");
-//				Vector3 scl = sprite.localScale;
-//				scl.x = dir;
-//				sprite.localScale = scl;
-
-//				transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, 90f - dir * 90f, transform.localEulerAngles.z);
 			}
 
 			Vector2 p = transform.position + Vector3.right * inputDirection * wallCheckDistance;
