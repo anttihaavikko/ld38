@@ -46,18 +46,15 @@ public class LevelSelector : MonoBehaviour {
 
 		bool looped = false;
 
+		if (current + dir >= transform.childCount) {
+			SceneManager.LoadScene("End");
+			return true;
+		}
+
 		// deactivate current level
 		transform.GetChild (current).gameObject.SetActive (false);
 
 		current += dir;
-
-		if (current >= transform.childCount) {
-			current = 0;
-			looped = true;
-
-			SceneManager.LoadScene("End");
-			return true;
-		}
 
 		if (current < 0) {
 			current = transform.childCount - 1;
