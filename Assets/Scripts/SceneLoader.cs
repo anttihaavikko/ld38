@@ -8,11 +8,14 @@ public class SceneLoader : MonoBehaviour {
 
 	public int scene;
 	public bool autoStart = false;
+	public float timeLimit = 0f;
 
 	private float angle = 0f;
 	private bool loadingScene = false;
 	private AsyncOperation async;
 	private Image image;
+
+	private float timeGone = 0f;
 
 	public GameObject displayText;
 
@@ -30,13 +33,15 @@ public class SceneLoader : MonoBehaviour {
 	// Updates once per frame
 	void Update() {
 
+		timeGone += Time.deltaTime;
+
 		if (Input.GetKeyDown (KeyCode.Escape)) {
 			Debug.Log ("Quit...");
 			Application.Quit ();
 			return;
 		}
 
-		if (!loadingScene && Input.anyKeyDown) {
+		if (!loadingScene && Input.anyKeyDown && timeGone >= timeLimit) {
 			StartLoading ();
 		}
 		
