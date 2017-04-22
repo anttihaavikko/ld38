@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlatformerController : MonoBehaviour {
 
 	// configurables
+	public LevelSelector levelSelector;
 	public float speed = 7f;
 	public float acceleration = 0.75f;
 	public float jump = 10f;
@@ -30,6 +31,7 @@ public class PlatformerController : MonoBehaviour {
 	// misc
 	private float jumpBufferedFor = 0;
 	private DirectionalGravity dirGrav;
+	private Vector3 spawn;
 
 	// particles
 	public GameObject jumpParticles, landParticles;
@@ -49,6 +51,8 @@ public class PlatformerController : MonoBehaviour {
 		audioSource = GetComponent<AudioSource> ();
 		anim = GetComponentInChildren<Animator> ();
 		dirGrav = GetComponent<DirectionalGravity> ();
+
+		spawn = transform.position;
 	}
 	
 	// Update is called once per frame
@@ -223,5 +227,13 @@ public class PlatformerController : MonoBehaviour {
 			groundAngle = 0;
 		}
 		return groundAngle;
+	}
+
+	void OnTriggerEnter2D(Collider2D other) {
+		if (other.gameObject.tag == "Goal") {
+			body.velocity = Vector2.zero;
+			transform.position = spawn;
+			levelSelector.NextLevel ();
+		}
 	}
 }
