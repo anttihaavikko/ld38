@@ -21,6 +21,7 @@ public class PlatformerController : MonoBehaviour {
 	public float wallCheckDistance = 1f;
 	public bool checkForEdges = false;
 	private float groundAngle = 0;
+	private float airTime = 0f;
 
 	// flags
 	private bool canControl = true;
@@ -63,6 +64,17 @@ public class PlatformerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		if (!grounded) {
+			airTime += Time.deltaTime;
+		} else {
+			airTime = 0f;
+		}
+
+		if (airTime > 5f) {
+			HudManager.Instance.DisplayMessage ("PRESS  R  TO  RESTART", 3f);
+			airTime = 0;
+		}
 
 		Vector2 shinePos = Quaternion.Euler(0, 0, -transform.rotation.eulerAngles.z) * (Vector3.up * 5f - transform.position).normalized * 0.05f;
 		shinePos = new Vector2 (shinePos.x * transform.localScale.x, shinePos.x * transform.localScale.y);
