@@ -33,6 +33,7 @@ public class PlatformerController : MonoBehaviour {
 	private DirectionalGravity dirGrav;
 	private Vector3 spawn;
 	public GameObject mouth;
+	public Transform shine;
 
 	// particles
 	public GameObject jumpParticles, landParticles;
@@ -58,6 +59,10 @@ public class PlatformerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		Vector2 shinePos = Quaternion.Euler(0, 0, -transform.rotation.eulerAngles.z) * (Vector3.up * 5f - transform.position).normalized * 0.05f;
+		shinePos = new Vector2 (shinePos.x * transform.localScale.x, shinePos.x * transform.localScale.y);
+		shine.localPosition = Vector2.MoveTowards(shine.localPosition, shinePos, 0.1f);
 
 		bool wasGrounded = grounded;
 
