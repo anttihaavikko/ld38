@@ -23,7 +23,7 @@ public class DirectionalGravity : MonoBehaviour {
 
 		Vector2 usedGravity = (transform.position.magnitude > 2f) ? gravity : gravityRounded;
 
-		body.AddForce (gravityRounded * 10f * transform.position.magnitude, ForceMode2D.Force);
+		body.AddForce (gravityRounded * 30f, ForceMode2D.Force);
 	}
 
 	void SolveGravity() {
@@ -58,7 +58,7 @@ public class DirectionalGravity : MonoBehaviour {
 	void ChangeRoundedGravity(Vector2 dir) {
 		
 		if (gravityRounded != dir) {
-			changeDelay = 0.1f;
+			changeDelay = 0.2f;
 		}
 
 		gravityRounded = dir;

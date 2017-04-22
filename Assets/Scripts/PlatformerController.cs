@@ -41,7 +41,7 @@ public class PlatformerController : MonoBehaviour {
 
 	// sound stuff
 	private AudioSource audioSource;
-	public AudioClip jumpClip, landClip;
+	public AudioClip jumpClip, landClip, eatClip, keyClip, cageClip, hopClip;
 
 	// animations
 	private Animator anim;
@@ -99,7 +99,7 @@ public class PlatformerController : MonoBehaviour {
 
 				// jump sounds
 				if (audioSource && jumpClip) {
-					audioSource.PlayOneShot (jumpClip);
+					PlayClip (jumpClip, 0.5f);
 				}
 
 				// jump particles
@@ -143,6 +143,7 @@ public class PlatformerController : MonoBehaviour {
 
 				if (!wallHug) {
 					body.AddForce (move * speed, ForceMode2D.Impulse);
+					PlayClip (hopClip, 0.1f);
 				}
 
 			}
@@ -182,13 +183,13 @@ public class PlatformerController : MonoBehaviour {
 		}
 	}
 
-	private void Land() {
+	private void Land(float force) {
 
 		doubleJumped = false;
 
 		// landing sound
 		if (audioSource && landClip) {
-			audioSource.PlayOneShot (landClip);
+			PlayClip (landClip, force / 40f);
 		}
 
 		// landing particles
@@ -214,7 +215,7 @@ public class PlatformerController : MonoBehaviour {
 	void OnCollisionEnter2D(Collision2D coll) {
 
 		if (!grounded) {
-			Land ();
+			Land (coll.relativeVelocity.magnitude);
 		}
 			
 		if (coll.relativeVelocity.magnitude > 7f) {
@@ -239,6 +240,7 @@ public class PlatformerController : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other) {
 
 		if (other.gameObject.tag == "Key") {
+			PlayClip (keyClip, 1f);
 			EffectManager.Instance.AddEffectAt (0, other.transform.position);
 			key = true;
 			Destroy (other.gameObject);
@@ -249,6 +251,12 @@ public class PlatformerController : MonoBehaviour {
 			Goal g = other.GetComponent<Goal> ();
 
 			if (!g.cage || key) {
+
+				if (g.cage) {
+					PlayClip (cageClip, 1f);
+				}
+
+				PlayClip (eatClip, 1f);
 				EffectManager.Instance.AddEffectAt (0, other.transform.position);
 				Destroy (other.gameObject);
 				mouth.SetActive (true);
@@ -262,5 +270,10 @@ public class PlatformerController : MonoBehaviour {
 		body.velocity = Vector2.zero;
 		transform.position = spawn;
 		levelSelector.NextLevel ();
+	}
+
+	void PlayClip(AudioClip clip, float volume) {
+		audioSource.pitch = 1f + Random.Range (-0.1f, 0.1f);
+		audioSource.PlayOneShot (clip, volume);
 	}
 }
