@@ -40,9 +40,6 @@ public class LevelSelector : MonoBehaviour {
 
 		bool looped = false;
 
-		// log completion
-		Application.ExternalCall("DoStats", "Completed " + transform.GetChild (current).gameObject.name + " (" + current + ")");
-
 		// deactivate current level
 		transform.GetChild (current).gameObject.SetActive (false);
 
