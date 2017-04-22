@@ -8,9 +8,14 @@ public class Blink : MonoBehaviour {
 	private float size;
 
 	public float speed = 1f;
+	private Vector3 originalPos;
+
+
 
 	// Use this for initialization
 	void Start () {
+		originalPos = transform.localPosition;
+
 		ResetTimer ();
 		size = transform.localScale.y;
 	}
@@ -31,6 +36,11 @@ public class Blink : MonoBehaviour {
 		if (timer >= 10) {
 			dir = -1f;
 		}
+
+		float posX = Mathf.PerlinNoise(Time.time * 0.5f, 0f);
+		float posY = Mathf.PerlinNoise(Time.time * 0.5f, 500f);
+
+		transform.localPosition = new Vector3 (originalPos.x - 0.1f + posX * 0.2f, originalPos.y - 0.1f + posY * 0.2f, originalPos.z);
 	}
 
 	void ResetTimer() {

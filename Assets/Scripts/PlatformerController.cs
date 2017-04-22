@@ -32,6 +32,7 @@ public class PlatformerController : MonoBehaviour {
 	private float jumpBufferedFor = 0;
 	private DirectionalGravity dirGrav;
 	private Vector3 spawn;
+	public GameObject mouth;
 
 	// particles
 	public GameObject jumpParticles, landParticles;
@@ -80,7 +81,7 @@ public class PlatformerController : MonoBehaviour {
 
 			float inputDirection = Input.GetAxis("Horizontal");
 
-			bool jumpCheck = Physics2D.OverlapCircle (groundCheck.position, groundCheckRadius, groundLayer);;
+			bool jumpCheck = Physics2D.OverlapCircle (groundCheck.position, groundCheckRadius, groundLayer);
 
 
 			// jump
@@ -119,7 +120,26 @@ public class PlatformerController : MonoBehaviour {
 			// moving
 			if (grounded && Mathf.Abs(inputDirection) > 0.1f) {
 				Vector2 move = dirGrav.MoveVector (inputDirection) + dirGrav.JumpVector() * 2;
-				body.AddForce (move * speed, ForceMode2D.Impulse);
+
+
+				//bool wall = Physics2D.OverlapCircle (move, groundCheckRadius, groundLayer);
+
+				// draw debug lines
+				//Color debugLineColor = wall ? Color.red : Color.green;
+				//Debug.DrawLine (transform.position, (Vector2)transform.position + move, debugLineColor, 0.2f);
+
+				Vector2 p = transform.position + (Vector3)dirGrav.MoveVector (inputDirection) * 0.5f;
+				bool wallHug = Physics2D.OverlapCircle (p, groundCheckRadius, groundLayer);
+				Color hugLineColor = grounded ? Color.green : Color.red;
+				Debug.DrawLine (transform.position, p, hugLineColor, 0.2f);
+
+				if (wallHug && !checkForEdges) {
+					body.velocity = new Vector2 (0, body.velocity.y);
+				}
+
+				if (!wallHug) {
+					body.AddForce (move * speed, ForceMode2D.Impulse);
+				}
 
 			}
 
@@ -133,14 +153,7 @@ public class PlatformerController : MonoBehaviour {
 				transform.localScale = new Vector2 (dir, 1);
 			}
 
-			Vector2 p = transform.position + Vector3.right * inputDirection * wallCheckDistance;
-			bool wallHug = Physics2D.OverlapCircle (p, groundCheckRadius, groundLayer);
-			Color hugLineColor = grounded ? Color.green : Color.red;
-			Debug.DrawLine (transform.position, p, hugLineColor, 0.2f);
 
-			if (wallHug && !checkForEdges) {
-				body.velocity = new Vector2 (0, body.velocity.y);
-			}
 
 			running = inputDirection < -inputBuffer || inputDirection > inputBuffer;
 
@@ -155,6 +168,11 @@ public class PlatformerController : MonoBehaviour {
 				} else {
 					anim.speed = 1f;
 					anim.SetFloat ("speed", 0);
+				}
+
+
+				if (Random.value < 0.01f) {
+					anim.SetTrigger ("wiggle");
 				}
 			}
 		}
@@ -207,9 +225,16 @@ public class PlatformerController : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.gameObject.tag == "Goal") {
-			body.velocity = Vector2.zero;
-			transform.position = spawn;
-			levelSelector.NextLevel ();
+			Destroy (other.gameObject);
+			mouth.SetActive (true);
+			Invoke ("NextLevel", 2f);
 		}
+	}
+
+	void NextLevel() {
+		mouth.SetActive (false);
+		body.velocity = Vector2.zero;
+		transform.position = spawn;
+		levelSelector.NextLevel ();
 	}
 }
