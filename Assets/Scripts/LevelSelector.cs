@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LevelSelector : MonoBehaviour {
 
@@ -51,6 +52,9 @@ public class LevelSelector : MonoBehaviour {
 		if (current >= transform.childCount) {
 			current = 0;
 			looped = true;
+
+			SceneManager.LoadScene("End");
+			return true;
 		}
 
 		if (current < 0) {
