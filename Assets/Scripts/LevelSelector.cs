@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class LevelSelector : MonoBehaviour {
 
 	private int current;
+	private Planet[] planets;
 
 	void Awake() {
 		Application.targetFrameRate = 60;
@@ -23,6 +24,8 @@ public class LevelSelector : MonoBehaviour {
 
 			idx++;
 		}
+
+		ActivatePlanets ();
 	}
 
 	void Update() {
@@ -57,6 +60,32 @@ public class LevelSelector : MonoBehaviour {
 		// activate next level
 		transform.GetChild (current).gameObject.SetActive (true);
 
+		ActivatePlanets ();
+
 		return looped;
+	}
+
+	void ActivatePlanets() {
+		planets = transform.GetChild (current).gameObject.GetComponentsInChildren<Planet> ();
+		Debug.Log (planets.Length + " planets found");
+	}
+
+	public Vector2 ClosestPlanet(Vector2 pos) {
+
+		float distance = 9999f;
+		Planet p = null;
+
+		for (int i = 0; i < planets.Length; i++) {
+			float d = (pos - (Vector2)planets [i].transform.position).magnitude / planets[i].Mass();
+
+			if (d < distance) {
+				p = planets [i];
+				distance = d;
+			}
+		}
+
+//		Debug.DrawLine (pos, p.transform.position, Color.red, 0.5f);
+
+		return p.transform.position;
 	}
 }

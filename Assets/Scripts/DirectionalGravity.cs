@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class DirectionalGravity : MonoBehaviour {
 
+	public LevelSelector levelSelector;
+
 	Vector2 gravity = Vector2.down;
 	Vector2 gravityRounded = Vector2.down;
 	Rigidbody2D body;
+
+	Vector3 origin = Vector3.zero;
 
 	float changeDelay = 0f;
 
@@ -21,8 +25,6 @@ public class DirectionalGravity : MonoBehaviour {
 		float angle = Mathf.Atan2(gravityRounded.y, gravityRounded.x) * Mathf.Rad2Deg + 90;
 		transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler (new Vector3 (0, 0, angle)), 20f);
 
-		Vector2 usedGravity = (transform.position.magnitude > 2f) ? gravity : gravityRounded;
-
 		body.AddForce (gravityRounded * 30f, ForceMode2D.Force);
 	}
 
@@ -33,26 +35,28 @@ public class DirectionalGravity : MonoBehaviour {
 			return;
 		}
 
-
+		origin = levelSelector.ClosestPlanet (transform.position);
 
 		gravity = -transform.position.normalized;
-		
-		if (transform.position.x < 0 && Mathf.Abs(transform.position.x) > Mathf.Abs(transform.position.y)) {
-			ChangeRoundedGravity (Vector2.right);
-			return;
-		}
 
-		if (transform.position.x > 0 && Mathf.Abs(transform.position.x) > Mathf.Abs(transform.position.y)) {
+		Vector3 pos = origin - transform.position;
+		
+		if (pos.x < 0 && Mathf.Abs(pos.x) > Mathf.Abs(pos.y)) {
 			ChangeRoundedGravity (Vector2.left);
 			return;
 		}
 
-		if (transform.position.y < 0) {
-			ChangeRoundedGravity (Vector2.up);
+		if (pos.x > 0 && Mathf.Abs(pos.x) > Mathf.Abs(pos.y)) {
+			ChangeRoundedGravity (Vector2.right);
 			return;
 		}
 
-		ChangeRoundedGravity (Vector2.down);
+		if (pos.y < 0) {
+			ChangeRoundedGravity (Vector2.down);
+			return;
+		}
+
+		ChangeRoundedGravity (Vector2.up);
 	}
 
 	void ChangeRoundedGravity(Vector2 dir) {
