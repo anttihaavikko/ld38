@@ -208,6 +208,22 @@ public class PlatformerController : MonoBehaviour {
 				if (Random.value < 0.01f) {
 					anim.SetTrigger ("wiggle");
 				}
+
+				if (Random.value < 0.005f) {
+					int move = Random.Range (0, 3);
+
+					if (move == 0) {
+						anim.SetTrigger ("brow");
+					}
+
+					if (move == 1) {
+						anim.SetTrigger ("brow_left");
+					}
+
+					if (move == 2) {
+						anim.SetTrigger ("brow_right");
+					}
+				}
 			}
 		}
 	}
