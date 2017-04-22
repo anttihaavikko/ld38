@@ -5,8 +5,8 @@ public class Cloud : MonoBehaviour {
 
 	private float speed;
 
-	private float min = -20f;
-	private float max = 20f;
+	private float min = -40f;
+	private float max = 40f;
 
 	// Use this for initialization
 	void Awake () {

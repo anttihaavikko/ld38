@@ -6,6 +6,8 @@ public class PerlinPitch : MonoBehaviour {
 
 	public float seed = 0f;
 	public float speed = 1f;
+	public float start = 0.25f;
+	public float amount = 0.25f;
 
 	AudioSource audioSource;
 
@@ -16,6 +18,6 @@ public class PerlinPitch : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		audioSource.pitch = 0.25f + Mathf.PerlinNoise (Time.time * speed, seed) * 0.25f;
+		audioSource.pitch = start + Mathf.PerlinNoise (Time.time * speed, seed) * amount;
 	}
 }

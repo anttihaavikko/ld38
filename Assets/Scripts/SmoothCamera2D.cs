@@ -27,7 +27,7 @@ public class SmoothCamera2D : MonoBehaviour {
 
 			chroma.chromaticAberration = Mathf.MoveTowards (chroma.chromaticAberration, 0, 1f);
 
-			float dist = Mathf.Clamp (target.transform.position.magnitude * 1.5f, 5f, 10f);
+			float dist = Mathf.Clamp (target.transform.position.magnitude * 1.5f, 5f, 12f);
 
 			Camera.main.orthographicSize = Mathf.MoveTowards(Camera.main.orthographicSize, dist, 0.025f);
 		}
