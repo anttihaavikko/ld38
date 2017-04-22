@@ -61,11 +61,6 @@ public class PlatformerController : MonoBehaviour {
 
 		bool wasGrounded = grounded;
 
-		// just landed
-		if (!wasGrounded && grounded) {
-			Land ();
-		}
-
 		// just left the ground
 		if (wasGrounded && !grounded) {
 			groundAngle = 0;
@@ -208,6 +203,11 @@ public class PlatformerController : MonoBehaviour {
 	}
 
 	void OnCollisionEnter2D(Collision2D coll) {
+
+		if (!grounded) {
+			Land ();
+		}
+
 		grounded = true;
 		groundAngle = Mathf.Atan2(coll.contacts [0].normal.y, coll.contacts [0].normal.x) * Mathf.Rad2Deg - 90;
 	}
