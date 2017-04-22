@@ -7,7 +7,6 @@ public class DirectionalGravity : MonoBehaviour {
 	public LevelSelector levelSelector;
 
 	Vector2 gravity = Vector2.down;
-	Vector2 gravityRounded = Vector2.down;
 	Rigidbody2D body;
 
 	Vector3 origin = Vector3.zero;
@@ -22,10 +21,10 @@ public class DirectionalGravity : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		SolveGravity ();
-		float angle = Mathf.Atan2(gravityRounded.y, gravityRounded.x) * Mathf.Rad2Deg + 90;
+		float angle = Mathf.Atan2(gravity.y, gravity.x) * Mathf.Rad2Deg + 90;
 		transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler (new Vector3 (0, 0, angle)), 20f);
 
-		body.AddForce (gravityRounded * 30f, ForceMode2D.Force);
+		body.AddForce (gravity * 30f, ForceMode2D.Force);
 	}
 
 	void SolveGravity() {
@@ -36,8 +35,6 @@ public class DirectionalGravity : MonoBehaviour {
 		}
 
 		origin = levelSelector.ClosestPlanet (transform.position);
-
-		gravity = -transform.position.normalized;
 
 		Vector3 pos = origin - transform.position;
 		
@@ -61,30 +58,30 @@ public class DirectionalGravity : MonoBehaviour {
 
 	void ChangeRoundedGravity(Vector2 dir) {
 		
-		if (gravityRounded != dir) {
+		if (gravity != dir) {
 			changeDelay = 0.2f;
 		}
 
-		gravityRounded = dir;
+		gravity = dir;
 	}
 
 	public Vector2 MoveVector(float direction) {
 
 		Vector2 vec = Vector2.zero;
 
-		if (gravityRounded == Vector2.down) {
+		if (gravity == Vector2.down) {
 			vec = new Vector2 (direction, 0);
 		}
 
-		if (gravityRounded == Vector2.up) {
+		if (gravity == Vector2.up) {
 			vec = new Vector2 (-direction, 0);
 		}
 
-		if (gravityRounded == Vector2.left) {
+		if (gravity == Vector2.left) {
 			vec = new Vector2 (0, -direction);
 		}
 
-		if (gravityRounded == Vector2.right) {
+		if (gravity == Vector2.right) {
 			vec = new Vector2 (0, direction);
 		}
 
@@ -92,6 +89,6 @@ public class DirectionalGravity : MonoBehaviour {
 	}
 
 	public Vector2 JumpVector() {
-		return -gravityRounded;
+		return -gravity;
 	}
 }
