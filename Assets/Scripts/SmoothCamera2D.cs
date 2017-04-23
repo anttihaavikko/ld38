@@ -17,7 +17,10 @@ public class SmoothCamera2D : MonoBehaviour {
 	void Start() {
 		chroma = GetComponent<VignetteAndChromaticAberration> ();
 		bloom = GetComponent<Bloom> ();
-		body = target.GetComponent<Rigidbody2D> ();
+
+		if (target) {
+			body = target.GetComponent<Rigidbody2D> ();
+		}
 	}
 
 	// Update is called once per frame

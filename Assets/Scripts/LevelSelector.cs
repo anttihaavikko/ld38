@@ -14,18 +14,8 @@ public class LevelSelector : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
-		int idx = 0;
-
-		// find currently active level
-		foreach(Transform child in transform) {
-			if (child.gameObject.activeSelf) {
-				current = idx;
-			}
-
-			idx++;
-		}
-
+		int idx = SaveManager.Instance.Level;
+		ActivateLevel (idx);
 		ActivatePlanets ();
 	}
 
@@ -42,11 +32,24 @@ public class LevelSelector : MonoBehaviour {
 		}
 	}
 
+	public void ActivateLevel(int level) {
+		// deactivate current level
+		transform.GetChild (current).gameObject.SetActive (false);
+
+		current = level;
+
+		// activate next level
+		transform.GetChild (current).gameObject.SetActive (true);
+
+		ActivatePlanets ();
+	}
+
 	public bool NextLevel(int dir = 1) {
 
 		bool looped = false;
 
 		if (current + dir >= transform.childCount) {
+			SaveManager.Instance.UnlockLevel (0);
 			SceneManager.LoadScene("End");
 			return true;
 		}
@@ -60,6 +63,8 @@ public class LevelSelector : MonoBehaviour {
 			current = transform.childCount - 1;
 		}
 
+		SaveManager.Instance.UnlockLevel (current);
+
 		// activate next level
 		transform.GetChild (current).gameObject.SetActive (true);
 
@@ -70,7 +75,7 @@ public class LevelSelector : MonoBehaviour {
 
 	void ActivatePlanets() {
 		planets = transform.GetChild (current).gameObject.GetComponentsInChildren<Planet> ();
-		Debug.Log (planets.Length + " planets found");
+//		Debug.Log (planets.Length + " planets found");
 	}
 
 	public Vector2 ClosestPlanet(Vector2 pos) {
