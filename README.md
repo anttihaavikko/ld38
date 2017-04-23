@@ -2,7 +2,7 @@
 
 Assume a role of a space hopping bunny in search of yummy carrots.
 
-![alt text](/Assets/Sprites/cover.jpg "Logo Title Text 1")
+![alt text](/Assets/Sprites/cover.jpg "Hops and Fever Dreams")
 
 These are the sources of my game created for **Ludum Dare 38 compo** with the theme '**A Small World**'.
 
