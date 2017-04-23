@@ -13,6 +13,8 @@ public class DirectionalGravity : MonoBehaviour {
 
 	float changeDelay = 0f;
 
+	public bool freeRotation = false;
+
 	// Use this for initialization
 	void Start () {
 		body = GetComponent<Rigidbody2D> ();
@@ -22,7 +24,10 @@ public class DirectionalGravity : MonoBehaviour {
 	void Update () {
 		SolveGravity ();
 		float angle = Mathf.Atan2(gravity.y, gravity.x) * Mathf.Rad2Deg + 90;
-		transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler (new Vector3 (0, 0, angle)), 20f);
+
+		if (!freeRotation) {
+			transform.rotation = Quaternion.RotateTowards (transform.rotation, Quaternion.Euler (new Vector3 (0, 0, angle)), 20f);
+		}
 
 		body.AddForce (gravity * 30f, ForceMode2D.Force);
 	}

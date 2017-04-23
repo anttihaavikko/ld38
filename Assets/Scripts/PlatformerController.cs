@@ -254,6 +254,7 @@ public class PlatformerController : MonoBehaviour {
 			Rigidbody2D poopBody = poop.GetComponent<Rigidbody2D> ();
 			Vector2 dir = transform.rotation * Vector2.left;
 			poopBody.AddForce (dir * 30f * transform.localScale.x, ForceMode2D.Impulse);
+			poopBody.AddTorque (Random.Range (-20f, 20f));
 
 			body.AddForce (-dir * 2f * transform.localScale.x, ForceMode2D.Impulse);
 
