@@ -13,4 +13,4 @@ echo "${COLOR}Pushing build for Linux${NC}"
 butler push Builds/linux anttihaavikko/hafd:linux
 
 echo "${COLOR}Pushing build for HTML5${NC}"
-butler push Builds/web anttihaavikko/hafd:html5
+butler push Builds/html5 anttihaavikko/hafd:html5
