@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlatformerController : MonoBehaviour {
 
@@ -82,6 +83,10 @@ public class PlatformerController : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.R)) {
 			Instantiate (jumpParticles, transform.position, Quaternion.identity);
 			ResetPosition ();
+		}
+
+		if (Input.GetKeyDown (KeyCode.Escape)) {
+			SceneManager.LoadScene ("Start");
 		}
 
 		if (Input.GetAxis ("Vertical") < -0.1f && Mathf.Abs (Input.GetAxis ("Horizontal")) < 0.1f) {
