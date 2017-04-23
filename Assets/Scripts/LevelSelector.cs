@@ -14,8 +14,18 @@ public class LevelSelector : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		int idx = SaveManager.Instance.Level;
-		ActivateLevel (idx);
+
+		// find the activated level
+		int idx = 0;
+		foreach(Transform child in transform) {
+			if (child.gameObject.activeSelf) {
+				current = idx;
+			}
+
+			idx++;
+		}
+
+		ActivateLevel (SaveManager.Instance.Level);
 		ActivatePlanets ();
 	}
 
