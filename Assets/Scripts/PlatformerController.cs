@@ -36,13 +36,16 @@ public class PlatformerController : MonoBehaviour {
 	public GameObject mouth;
 	public Transform shine;
 	private bool key = false;
+	public GameObject poopPrefab;
+	public Transform poopPos;
+	private bool pooping = false;
 
 	// particles
 	public GameObject jumpParticles, landParticles;
 
 	// sound stuff
 	private AudioSource audioSource;
-	public AudioClip jumpClip, landClip, eatClip, keyClip, cageClip, hopClip;
+	public AudioClip jumpClip, landClip, eatClip, keyClip, cageClip, hopClip, poopClip;
 
 	// animations
 	private Animator anim;
@@ -84,6 +87,7 @@ public class PlatformerController : MonoBehaviour {
 		if (Input.GetAxis ("Vertical") < -0.1f && Mathf.Abs (Input.GetAxis ("Horizontal")) < 0.1f) {
 			anim.SetBool ("duck", true);
 		} else {
+			pooping = false;
 			anim.SetBool ("duck", false);
 		}
 
@@ -225,6 +229,32 @@ public class PlatformerController : MonoBehaviour {
 					}
 				}
 			}
+		}
+	}
+
+	public void DelayedPoop() {
+		pooping = true;
+		Invoke ("Poop", Random.Range (0.5f, 2.5f));
+	}
+
+	public void Poop() {
+
+		if (pooping) {
+
+			PlayClip (poopClip, 1f);
+
+			GameObject poop = Instantiate (poopPrefab, poopPos.position, Quaternion.identity);
+			poop.GetComponent<DirectionalGravity> ().levelSelector = dirGrav.levelSelector;
+
+			Rigidbody2D poopBody = poop.GetComponent<Rigidbody2D> ();
+			Vector2 dir = transform.rotation * Vector2.left;
+			poopBody.AddForce (dir * 30f * transform.localScale.x, ForceMode2D.Impulse);
+
+			body.AddForce (-dir * 2f * transform.localScale.x, ForceMode2D.Impulse);
+
+			levelSelector.AddPoop (poop);
+
+			DelayedPoop ();
 		}
 	}
 

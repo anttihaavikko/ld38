@@ -40,4 +40,8 @@ public class IntroBunny : MonoBehaviour {
 	void UnStretch() {
 		anim.SetBool ("stretch", false);
 	}
+
+	public void DelayedPoop() {
+		// not here
+	}
 }

@@ -2,11 +2,13 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class LevelSelector : MonoBehaviour {
 
 	private int current;
 	private Planet[] planets;
+	private List<GameObject> poops;
 
 	void Awake() {
 		Application.targetFrameRate = 60;
@@ -14,6 +16,8 @@ public class LevelSelector : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+		poops = new List<GameObject> ();
 
 		// find the activated level
 		int idx = 0;
@@ -27,6 +31,18 @@ public class LevelSelector : MonoBehaviour {
 
 		ActivateLevel (SaveManager.Instance.Level);
 		ActivatePlanets ();
+	}
+
+	public void AddPoop(GameObject poop) {
+		poops.Add (poop);
+	}
+
+	public void ClearPoops() {
+		foreach (GameObject p in poops) {
+			Destroy (p);
+		}
+
+		poops.Clear ();
 	}
 
 	void Update() {
@@ -45,6 +61,8 @@ public class LevelSelector : MonoBehaviour {
 	public void ActivateLevel(int level) {
 		// deactivate current level
 		transform.GetChild (current).gameObject.SetActive (false);
+
+		ClearPoops ();
 
 		current = level;
 
@@ -66,6 +84,8 @@ public class LevelSelector : MonoBehaviour {
 
 		// deactivate current level
 		transform.GetChild (current).gameObject.SetActive (false);
+
+		ClearPoops ();
 
 		current += dir;
 
